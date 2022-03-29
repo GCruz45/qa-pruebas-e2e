@@ -1,1 +1,1 @@
-# qa-pruebas-e2e
+# cypress-practice
