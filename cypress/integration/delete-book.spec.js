@@ -18,7 +18,7 @@ describe("Given I want to delete a book", () => {
               ".ant-pagination-next.ng-star-inserted.ant-pagination-disabled"
             ).length
           ) {
-            return false;
+            continue;
           }
           cy.get("button .anticon-right ").click();
           cy.wait(300);

@@ -1,0 +1,16 @@
+{
+  "name": "cypress-practice",
+  "version": "1.0.0",
+  "description": "Practice for Cypress",
+  "main": "index.js",
+  "scripts": {
+    "test:e2e:ui": "cypress open",
+    "test:e2e:headless": "cypress run"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@faker-js/faker": "^6.0.0",
+    "cypress": "^9.5.2"
+  }
+}
