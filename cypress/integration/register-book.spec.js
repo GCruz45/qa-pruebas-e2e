@@ -1,41 +1,53 @@
-// const { faker } = require('@faker-js/faker');
-
-// let catName;
+const back = "http://localhost:8080/books";
 describe("Given I want to register a book", () => {
   before(() => {
     // Arrange
-    // catName = faker.name.firstName();
-    cy.visit("http://localhost:4200/dashboard");
+
+    cy.intercept("POST", back).as("registerBook");
+    this.registerBook.reply.body.id.as("bookId");
+    // cy.intercept("POST", back, (req) => {
+    //   cy.req.reply.body.id.as("bookId");
+    //   // req.reply((res) => {
+    //   //   bookId = res.body.id;
+    //   // });
+    // }).as("registerBook");
+    cy.visit("dashboard");
+  });
+
+  beforeEach(() => {
+    // Arrange
     cy.get(".ant-btn-primary").contains("Add").click();
-    cy.wait(300);
-    cy.get("#name").type("Ulyses");
-    cy.get("#author").type("James Joyce");
-
-    // Act
-    cy.contains("Save").click();
+    // cy.wait(300);
   });
 
-  it("The book should be visible in the list of books", () => {
+  it("The book should be created and visible in the list of books ", () => {
     //Assert
-    expect(true).to.equal(true);
+    cy.get("#name").should("have.value", "Ulyses");
   });
 
-  // it ('The cat should be visible in the list of animals', () => {
-  //     //Assert
-  //     cy.get(`[data-testid=${catName}-container]`).should('exist');
-  // })
+  Cypress._.times(100, (i) => {
+    it(`Iteration #${
+      i + 1
+    } - The book should be visible in the list of books`, () => {
+      Cypress.Commands.add("clickVisibleButton", () => {
+        cy.get("body").then(($body) => {
+          const bookIsVisible = $body.text().includes("James Joyce");
+          if (!bookIsVisible) {
+            cy.get("button .anticon-right ").click();
+            cy.wait(300);
+            cy.clickVisibleButton();
+          }
+        });
+      });
 
-  // it ('The cat icon should display that is not vaccinated', () => {
-  //     //Assert
-  //     cy.get(`[data-testid=${catName}-container]`)
-  //         .get('[name=is-vaccinated-cat]')
-  //         .get('[name=unhealthy-icon]').should('exist');
-  // })
+      cy.clickVisibleButton();
 
-  // after(() => {
-  //     cy.request(
-  //         'DELETE',
-  //         `http://localhost:4200/dashboard/books/Ulyses`);
-  //         // `http://localhost:4200/dashboard/books/${catName}`);
-  // })
+      //Assert
+      cy.get("tr").contains("tr", "Ulyses").should("exist");
+    });
+  });
+
+  after(() => {
+    cy.request("DELETE", `http://localhost:8080/books/${bookId}`);
+  });
 });
