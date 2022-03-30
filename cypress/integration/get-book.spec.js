@@ -1,12 +1,13 @@
+let bookId = "";
 describe("Given I want to obtain a book", () => {
   before(() => {
     // Arrange
     cy.visit("http://localhost:4200/dashboard");
-    // cy.get(".ant-btn-primary").contains("Add").click();
-    // cy.wait(300);
-    // cy.get("#name").type("Ulyses");
-    // cy.get("#author").type("James Joyce");
-    // cy.contains("Save").click();
+    cy.get(".ant-btn-primary").contains("Add").click();
+    cy.wait(300);
+    cy.get("#name").type("Ulyses");
+    cy.get("#author").type("James Joyce");
+    cy.contains("Save").click();
     cy.wait(300);
 
     Cypress.Commands.add("clickVisibleButton", () => {
@@ -44,17 +45,7 @@ describe("Given I want to obtain a book", () => {
       });
   });
 
-  // after(() => {
-  //     cy.request(
-  //         'DELETE',
-  //         `http://localhost:4200/dashboard/books/Ulyses`);
-  //         // `http://localhost:4200/dashboard/books/${catName}`);
-  // })
-
-  // Para probar si algo es flaky, esto sirve para ejecutarlo 100 veces
-  // Cypress._.times(100, (i) => {
-  //     it(`num ${i + 1} - test the thing conditionally`, () => {
-  //       // do the conditional bits 100 times
-  //     })
-  //   })
+  after(() => {
+    cy.request("DELETE", `http://localhost:8080/books/${bookId}`);
+  });
 });
