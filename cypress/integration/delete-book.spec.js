@@ -1,7 +1,7 @@
 describe("Given I want to delete a book", () => {
   before(() => {
     // Arrange
-    cy.visit("http://localhost:4200/dashboard");
+    cy.visit("dashboard");
     // Creates the book to guarantee test independency
     cy.get(".ant-btn-primary").contains("Add").click();
     cy.wait(300);
@@ -10,18 +10,16 @@ describe("Given I want to delete a book", () => {
     cy.contains("Save").click();
     cy.wait(300);
 
-    // Finds the book and selects it by checking its checkbox
-    cy.clickVisibleButton();
-
-    // Act
-    cy.get(".ant-btn").contains("Delete").click();
   });
 
   it("The book should not exist", () => {
+    // Act
+    // Finds the book and selects it by checking its checkbox
+    cy.clickVisibleButton();
+    cy.get(".ant-btn").contains("Delete").click();
     // Goes back to the main page to start a left-to-right page navigation search for the book
-    cy.visit("http://localhost:4200/dashboard");
+    cy.visit("dashboard");
     cy.wait(300);
-
     // Executes the page search
     cy.clickVisibleButton();
 
