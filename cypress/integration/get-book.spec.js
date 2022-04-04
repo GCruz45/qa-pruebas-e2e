@@ -1,51 +1,55 @@
-let bookId = "";
 describe("Given I want to obtain a book", () => {
   before(() => {
     // Arrange
-    cy.visit("http://localhost:4200/dashboard");
+    cy.visit("dashboard");
     cy.get(".ant-btn-primary").contains("Add").click();
     cy.wait(300);
     cy.get("#name").type("Ulyses");
     cy.get("#author").type("James Joyce");
     cy.contains("Save").click();
     cy.wait(300);
+  });
 
-    Cypress.Commands.add("clickVisibleButton", () => {
-      cy.get("body").then(($body) => {
-        const bookIsVisible = $body.text().includes("James Joyce");
-        if (!bookIsVisible) {
-          cy.get("button .anticon-right ").click();
-          cy.wait(300);
-          cy.clickVisibleButton();
-        }
-      });
+  beforeEach(() => {
+    // Arrange
+    // Go back to the main page
+    cy.get(".ant-pagination-item.ng-star-inserted").contains("1").click();
+  });
+
+  Cypress._.times(10, (i) => {
+    it(`Iteration #${
+      i + 1
+    } - The book should be visible in the list of books`, () => {
+      // Act
+      // Go to the page that contains the book
+      cy.clickVisibleButton();
+
+      //Assert
+      cy.get("tr").contains("tr", "Ulyses").should("exist");
     });
+  });
 
+  after(() => {
+    // Delete the book that was created during the Arrange step
     cy.clickVisibleButton();
 
-    // Act
     cy.get("tr")
       .contains("tr", "Ulyses")
       .within(() => {
         cy.get('[type="checkbox"]').check();
       });
-  });
 
-  it("The book should be visible in the list of books", () => {
-    //Assert
-    cy.get("tr").contains("tr", "Ulyses").should("exist");
+    cy.get(".ant-btn").contains("Delete").click();
   });
+});
 
-  it("The book should have its checkbox checked", () => {
-    //Assert
-    cy.get("tr")
-      .contains("tr", "Ulyses")
-      .within(() => {
-        cy.get('[type="checkbox"]').should("be.checked");
-      });
-  });
-
-  after(() => {
-    cy.request("DELETE", `http://localhost:8080/books/${bookId}`);
+Cypress.Commands.add("clickVisibleButton", () => {
+  cy.get("body").then(($body) => {
+    const bookIsVisible = $body.text().includes("James Joyce");
+    if (!bookIsVisible) {
+      cy.get("button .anticon-right ").click();
+      cy.wait(300);
+      cy.clickVisibleButton();
+    }
   });
 });
